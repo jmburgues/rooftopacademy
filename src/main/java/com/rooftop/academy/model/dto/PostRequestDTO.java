@@ -7,7 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Builder
 @Data
-public class ResponseDTO {
-    private int id;
-    private String url;
+public class PostRequestDTO {
+    private String text;
+    private int chars;
 }

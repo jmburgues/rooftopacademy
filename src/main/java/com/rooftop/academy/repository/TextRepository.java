@@ -25,7 +25,7 @@ public interface TextRepository extends JpaRepository<AnalyzedText, Integer> {
     @Query(value = "UPDATE ANALYSIS SET DELETED = 'TRUE' WHERE ANALYSIS_ID = :id", nativeQuery = true)
     void logicalDelete(Integer id);
 
-    @Query(value = "SELECT * FROM ANALYSIS WHERE ID = ?1 AND DELETED = FALSE", nativeQuery = true)
+    @Query(value = "SELECT * FROM ANALYSIS WHERE ANALYSIS_ID = ?1 AND DELETED = FALSE", nativeQuery = true)
     Optional<AnalyzedText> findById(Integer id);
 
     @Transactional

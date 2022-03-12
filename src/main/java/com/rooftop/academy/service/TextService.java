@@ -3,14 +3,11 @@ package com.rooftop.academy.service;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.hibernate.internal.util.StringHelper;
-import org.springframework.boot.web.servlet.server.Encoding;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -36,7 +33,7 @@ public class TextService {
         Integer validatedChars = validateChars(text, chars);
         String hash = encodeRequest(text, validatedChars);
         Optional<AnalyzedText> analyzedText = textRepository.findByHash(hash);
-        if(analyzedText.isPresent() && analyzedText.get().getDeleted()) {
+        if (analyzedText.isPresent() && analyzedText.get().getDeleted()) {
             textRepository.undeleteRegistry(analyzedText.get().getId());
         }
         return analyzedText.orElseGet(() -> analyze(text, validatedChars));
@@ -47,7 +44,7 @@ public class TextService {
         String hash = encodeRequest(text, chars);
         LinkedList<Word> result = new LinkedList<>();
 
-        for (int i = 0; i < (text.length() - chars +1); i++) {
+        for (int i = 0; i < (text.length() - chars + 1); i++) {
             String substring = text.substring(i, i + chars);
             int matches = StringUtils.countOccurrencesOf(text, substring);
             result.add(Word.builder().word(substring).occurrences(matches).build());
@@ -96,7 +93,7 @@ public class TextService {
     }
 
     private Integer validateRpp(Integer rpp) {
-        if(Objects.isNull(rpp))
+        if (Objects.isNull(rpp))
             return RPP_MIN;
         if (rpp > RPP_MAX)
             return RPP_MAX;
