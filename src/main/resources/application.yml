@@ -12,5 +12,6 @@ spring:
   data:
     web:
       pageable:
+        size-parameter: size
         one-indexed-parameters: true
-        default-page-size: 15
+        default-page-size: 10

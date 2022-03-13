@@ -148,7 +148,7 @@ class TextControllerTest {
         // when
         when(textService.getAll(any(),any(), any())).thenReturn(paginatedText);
 
-        ResponseEntity<List<GetResponseDTO>> response = underTest.getAllTexts(chars, PageRequest.of(page,rpp));
+        ResponseEntity<List<GetResponseDTO>> response = underTest.getAllTexts(chars, rpp, PageRequest.of(page,rpp));
 
         // then
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -159,19 +159,5 @@ class TextControllerTest {
 
         verify(textService, times(1)).getAll(chars, page, rpp);
     }
-
-    @Test
-    public void testGetAll_DefaultValues() {
-        // given
-        Integer defaultPage = 1;
-        Integer defaultRpp = 10;
-
-        // when
-        underTest.getAllTexts(null, null);
-
-        // then
-        verify(textService, times(1)).getAll(any(), defaultPage, defaultRpp);
-    }
-
 
 }

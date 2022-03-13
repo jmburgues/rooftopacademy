@@ -51,9 +51,11 @@ public class TextController {
 
     @GetMapping
     public ResponseEntity<List<GetResponseDTO>> getAllTexts(
-            @RequestParam(value = "chars", required = false) Integer chars, Pageable pageable) {
+            @RequestParam(value = "chars", required = false) Integer chars,
+            @RequestParam(value = "rpp", defaultValue = "10") Integer rpp,
+            Pageable pageable) {
 
-        List<GetResponseDTO> result = textService.getAll(chars,pageable.getPageNumber(), pageable.getPageSize()).get()
+        List<GetResponseDTO> result = textService.getAll(chars,pageable.getPageNumber(), rpp).get()
                 .map(Converter::convert)
                 .collect(Collectors.toList());
 
