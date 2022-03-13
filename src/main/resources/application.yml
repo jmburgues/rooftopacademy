@@ -8,3 +8,9 @@ spring:
     driverClassName: org.h2.Driver
     username: root
     password: root
+
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true
+        default-page-size: 15

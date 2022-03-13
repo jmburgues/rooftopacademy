@@ -5,10 +5,12 @@ import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @AllArgsConstructor
 @Builder
 @Data
+@EqualsAndHashCode
 public class GetResponseDTO {
     private Integer id;
     private String hash;

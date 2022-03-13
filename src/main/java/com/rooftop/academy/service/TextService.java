@@ -4,10 +4,11 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -44,12 +45,11 @@ public class TextService {
                 .orElseThrow(() -> new ResourceNotFoundException("Text not found"));
     }
 
-    public List<AnalyzedText> getAll(Integer chars, Integer page, Integer rpp) {
+    public Page<AnalyzedText> getAll(Integer chars, Integer page, Integer rpp) {
         chars = validateChars(chars);
         rpp = validateRpp(rpp);
-        page = (page <= 1) ? 0 : page - 1;
 
-        return textRepository.findAllWithChars(chars, page, rpp);
+        return textRepository.findAllByCharsPaginated(chars, PageRequest.of(page,rpp));
     }
 
     public void deleteById(Integer id) {
