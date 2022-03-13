@@ -23,9 +23,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class TextService {
-    private static final String MINIMUM_CHARS = "2";
-    private static final Integer RPP_MAX = 100;
-    private static final Integer RPP_MIN = 10;
+    public static final String MINIMUM_CHARS = "2";
+    public static final Integer RPP_MAX = 100;
+    public static final Integer RPP_MIN = 10;
 
     private final TextRepository textRepository;
 
@@ -37,6 +37,25 @@ public class TextService {
             textRepository.undeleteRegistry(analyzedText.get().getId());
         }
         return analyzedText.orElseGet(() -> analyze(text, validatedChars));
+    }
+
+    public AnalyzedText getById(Integer id) {
+        return textRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Text not found"));
+    }
+
+    public List<AnalyzedText> getAll(Integer chars, Integer page, Integer rpp) {
+        chars = validateChars(chars);
+        rpp = validateRpp(rpp);
+        page = (page <= 1) ? 0 : page - 1;
+
+        return textRepository.findAllWithChars(chars, page, rpp);
+    }
+
+    public void deleteById(Integer id) {
+        if (!textRepository.existsById(id))
+            throw new ResourceNotFoundException("Text not found");
+        textRepository.logicalDelete(id);
     }
 
     private AnalyzedText analyze(String text, Integer chars) {
@@ -56,20 +75,6 @@ public class TextService {
                 .result(result)
                 .deleted(false)
                 .build());
-    }
-
-    //TODO: Verify this exception thrown.
-    public AnalyzedText getById(Integer id) {
-        return textRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Text not found"));
-    }
-
-    public List<AnalyzedText> getAll(Integer chars, Integer page, Integer rpp) {
-        chars = validateChars(chars);
-        rpp = validateRpp(rpp);
-        page = (page <= 1) ? 0 : page - 1;
-
-        return textRepository.findAllWithChars(chars, page, rpp);
     }
 
     private String encodeRequest(String text, Integer chars) {
@@ -105,6 +110,11 @@ public class TextService {
     private Integer validateChars(String requestedText, Integer requestedNumber) {
         Integer minCharNumber = Integer.valueOf(MINIMUM_CHARS);
 
+        if(Objects.isNull(requestedText))
+            throw new RuntimeException("Required text must not be null");
+        // If text is empty or 1 char, analysis will be saved just one time
+        if(requestedText.length() < minCharNumber)
+            return minCharNumber;
         if (Objects.isNull(requestedNumber) || requestedNumber < minCharNumber)
             return minCharNumber;
         if (requestedNumber > requestedText.length())
@@ -117,11 +127,5 @@ public class TextService {
         return (Objects.isNull(requestedNumber) || requestedNumber < minCharNumber) ?
                 minCharNumber :
                 requestedNumber;
-    }
-
-    public void deleteById(Integer id) {
-        if (!textRepository.existsById(id))
-            throw new ResourceNotFoundException("Text not found");
-        textRepository.logicalDelete(id);
     }
 }

@@ -27,6 +27,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
     public ResponseEntity<Object> defaultExceptionHandler(Exception exception) {
         exception.printStackTrace();
+        logger.error(exception.getMessage());
         ApiError apiError = ApiError.builder().error(true).code(422).message("An error occurred when processing the text").build();
         return new ResponseEntity<>(apiError, HttpStatus.UNPROCESSABLE_ENTITY);
     }
